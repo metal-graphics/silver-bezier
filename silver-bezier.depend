@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1416238148 source:c:\users\akash\documents\github\silver-bezier\bezier1.cpp
+	<iostream>
+	<cstdlib>
+	<GL/glut.h>
+	<windows.h>
+	<cmath>
+	<vector>
+	<utility>
+
