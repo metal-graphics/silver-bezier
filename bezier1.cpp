@@ -13,6 +13,7 @@
 #include <cmath>
 #include <vector>
 #include <utility>
+#include "DrawCircle.h"
 
 #define mp make_pair
 #define pb push_back
@@ -23,6 +24,9 @@ using namespace std;
 
 //Global Variables
 int numPoints = 0;
+bool draw = false;
+int click = 0;
+int newPoint;
 
 
 class Point
@@ -54,7 +58,6 @@ void myInit()
 {
   glClearColor(0.0,0.0,0.0,0.0);            // Set background color to black
   glColor3f(1.0,0.0,0.0);
-  glPointSize(4.0);
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   gluOrtho2D(0.0,640.0,0.0,480.0);
@@ -64,6 +67,7 @@ void myInit()
 /* drawDot draws a point of size 4 */
 void drawDot(int x, int y)
 {
+  glColor3f(1.0,0.0,0.0);
   glBegin(GL_POINTS);
     glVertex2i(x,y);
   glEnd();
@@ -74,6 +78,8 @@ void drawDot(int x, int y)
 /* drawLine draws a line between points p1 and p2 */
 void drawLine(Point p1, Point p2)
 {
+  glColor3f(1.0,1.0,0.0);
+  glLineWidth(1);
   glBegin(GL_LINES);
     glVertex3f(p1.x, p1.y, p1.z);
     glVertex3f(p2.x, p2.y, p2.z);
@@ -154,26 +160,40 @@ void myMouse(int button, int state, int x, int y)
       points.pb(p);
       numPoints++;
 
+      DrawCircle dc = DrawCircle(mp(x,480-y)); //draws a circle of rad=10 around the point
       drawDot(x, 480 - y);
     }
     if(y<=50)
     {
-      glColor3f(1.0,1.0,1.0);
-
-      for(int i=0; i<numPoints-1;i++)
+      draw = true;
+      glutPostRedisplay();
+    }
+  }
+  if(button == GLUT_RIGHT_BUTTON && state==GLUT_DOWN)
+  {
+    if(click==0)
+    {
+      int sz = points.size();
+      for(int i=0; i<sz; ++i)//check if the selected point already exists in the vector
       {
-        drawLine(points[i],points[i+1]);
-      }
+        int dx1 = points[i].x - x;
+        int dy1 = points[i].y - (480-y);
+        float rad = sqrt(dx1*dx1 + dy1*dy1);
 
-      Point M, P = points[0];
-      for(float t = 0.0;t <= 1.0; t += 0.001)
-      {
-        M = bernstein(t, numPoints-1);
-        drawBezier(P,M);
-        P=M;
+        if(rad<=10) //mouse click corresponds to a particular point in the vector list
+        {
+          newPoint = i;
+          click = 1;
+          break;
+        }
       }
-
-      numPoints = 0;
+    }
+    else if(click==1)//select the new position of the point
+    {
+      points[newPoint].setxy( (float)x, (float)(480-y) );
+      click = 0;
+      draw = true;
+      glutPostRedisplay();//new curve
     }
   }
 }
@@ -186,6 +206,28 @@ void myMouse(int button, int state, int x, int y)
 void myDisplay()
 {
   glClear(GL_COLOR_BUFFER_BIT);
+
+  glColor3f(1.0,1.0,1.0);
+
+  if(draw==true)
+  {
+    for(int i=0; i<numPoints-1;i++)
+    {
+      DrawCircle dc = DrawCircle(mp(points[i].x,points[i].y));
+      drawLine(points[i],points[i+1]);
+    }
+    DrawCircle dc1 = DrawCircle(mp(points[numPoints-1].x, points[numPoints-1].y));
+
+    Point M, P = points[0];
+    for(float t = 0.0;t <= 1.0; t += 0.001)
+    {
+      M = bernstein(t, numPoints-1);
+      drawBezier(P,M);
+      P=M;
+    }
+    draw = false;
+  }
+
   glFlush();
 }
 
