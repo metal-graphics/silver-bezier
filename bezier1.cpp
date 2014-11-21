@@ -14,6 +14,7 @@
 #include <vector>
 #include <utility>
 #include "DrawCircle.h"
+#include "MeshDS.h"
 
 #define mp make_pair
 #define pb push_back
@@ -27,28 +28,6 @@ int numPoints = 0;
 bool draw = false;
 int click = 0;
 int newPoint;
-
-
-class Point
-{
-  public:
-    float x, y, z;
-
-    void setxy(float x2, float y2)
-    {
-      x = x2;
-      y = y2;
-    }
-
-    const Point & operator=(const Point &rPoint)
-    {
-      x = rPoint.x;
-      y = rPoint.y;
-      z = rPoint.z;
-
-      return *this;
-    }
-};
 
 vector<Point> points;
 
@@ -103,9 +82,9 @@ void drawBezier(Point p1, Point p2)
 
 
 /* calculates the factorial of a number x */
-float factorial(int x)
+double factorial(int x)
 {
-  float fact = 1;
+  double fact = 1;
   int p=1;
   if(x==0 || x==1)
     return 1;
@@ -123,18 +102,18 @@ float factorial(int x)
 
 
 /* finds the binomial coefficient nCf */
-float binomial(int f, int n)
+double binomial(int f, int n)
 {
-  float com = factorial(n)/(factorial(f)*factorial(n-f));
+  double com = factorial(n)/(factorial(f)*factorial(n-f));
   return com;
 }
 
 
-Point bernstein(float t, int num)
+Point bernstein(double t, int num)
 {
   Point n;
-  float nx = 0;
-  float ny = 0;
+  double nx = 0;
+  double ny = 0;
 
   for(int i=0; i<=num; i++)
   {
@@ -142,7 +121,7 @@ Point bernstein(float t, int num)
     ny += points[i].y*binomial(i,num)*pow(t,i)*pow((1-t),(num-i));
   }
 
-  n.setxy(nx,ny);
+  n.setxyz(nx,ny,0.0f);
 
   return n;
 }
@@ -156,7 +135,7 @@ void myMouse(int button, int state, int x, int y)
     if(y>50)
     {
       Point p = Point();
-      p.setxy( (float)x, (float)(480-y) );
+      p.setxyz( (double)x, (double)(480-y), 0.0f );
       points.pb(p);
       numPoints++;
 
@@ -169,7 +148,7 @@ void myMouse(int button, int state, int x, int y)
       glutPostRedisplay();
     }
   }
-  if(button == GLUT_RIGHT_BUTTON && state==GLUT_DOWN)
+  else if(button == GLUT_RIGHT_BUTTON && state==GLUT_DOWN)
   {
     if(click==0)
     {
@@ -178,7 +157,7 @@ void myMouse(int button, int state, int x, int y)
       {
         int dx1 = points[i].x - x;
         int dy1 = points[i].y - (480-y);
-        float rad = sqrt(dx1*dx1 + dy1*dy1);
+        double rad = sqrt(dx1*dx1 + dy1*dy1);
 
         if(rad<=10) //mouse click corresponds to a particular point in the vector list
         {
@@ -190,11 +169,22 @@ void myMouse(int button, int state, int x, int y)
     }
     else if(click==1)//select the new position of the point
     {
-      points[newPoint].setxy( (float)x, (float)(480-y) );
+      points[newPoint].setxyz( (double)x, (double)(480-y), 0.0f );
       click = 0;
       draw = true;
       glutPostRedisplay();//new curve
     }
+  }
+  else if(button==GLUT_MIDDLE_BUTTON && state==GLUT_DOWN )
+  {
+    cout<<"parsing the OFF file\n";
+
+    /* parser for off format files */
+    MeshDS md, nd;
+    md = MeshDS();
+    nd = md.meshObject(); //nd is the mesh data structure
+
+    cout<<"parsed the OFF input file\nvalues stored in object of MeshDS class\n";
   }
 }
 
@@ -219,7 +209,7 @@ void myDisplay()
     DrawCircle dc1 = DrawCircle(mp(points[numPoints-1].x, points[numPoints-1].y));
 
     Point M, P = points[0];
-    for(float t = 0.0;t <= 1.0; t += 0.001)
+    for(double t = 0.0;t <= 1.0; t += 0.001)
     {
       M = bernstein(t, numPoints-1);
       drawBezier(P,M);
