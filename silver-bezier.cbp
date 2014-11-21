@@ -36,6 +36,11 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
+		<Unit filename="DrawCircle.cpp" />
+		<Unit filename="DrawCircle.h" />
+		<Unit filename="MeshDS.cpp" />
+		<Unit filename="MeshDS.h" />
+		<Unit filename="Point.cpp" />
 		<Unit filename="bezier1.cpp" />
 		<Extensions>
 			<code_completion />

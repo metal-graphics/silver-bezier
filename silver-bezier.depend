@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1416327849 source:c:\users\akash\documents\github\silver-bezier\bezier1.cpp
+1416494567 source:c:\users\akash\documents\github\silver-bezier\bezier1.cpp
 	<iostream>
 	<cstdlib>
 	<GL/glut.h>
@@ -8,6 +8,7 @@
 	<vector>
 	<utility>
 	"DrawCircle.h"
+	"MeshDS.h"
 
 1416326262 source:c:\users\akash\documents\github\silver-bezier\drawcircle.cpp
 	<iostream>
@@ -20,4 +21,19 @@
 1411639925 c:\users\akash\documents\github\silver-bezier\drawcircle.h
 	<iostream>
 	<utility>
+
+1416553467 c:\users\akash\documents\github\silver-bezier\meshds.h
+	<iostream>
+	<vector>
+	<cstdlib>
+	<utility>
+	<fstream>
+	"Point.cpp"
+
+1416551952 c:\users\akash\documents\github\silver-bezier\point.cpp
+
+1416552538 source:c:\users\akash\documents\github\silver-bezier\meshds.cpp
+	"MeshDS.h"
+
+1416551952 source:c:\users\akash\documents\github\silver-bezier\point.cpp
 
