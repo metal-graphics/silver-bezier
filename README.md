@@ -6,5 +6,7 @@ editable-bezier
   
 <h2>Source Files </h2>
   bezier1.cpp - contains the main code to run the program. It is an OpenGL implementation. It also contains the de Casteljau's algorithm to draw Bezier curve.
+  
   MeshDS.cpp and MeshDS.h - These files create a class MeshDS to implement a mesh data structure to handle vertices and faces of the 3-d surface revolution.
+  
   Point.cpp - It contains a class which represents a 3-d vertex.
