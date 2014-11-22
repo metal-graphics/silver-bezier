@@ -6,11 +6,20 @@
 #include "DrawCircle.h"
 
 pii origin;
+int radius;
 
 void DrawCircle::plotPixel( int x, int y )
 {
-  glColor3f(1.0,0.0,0.0);
-  
+  if(radius==10)
+  {
+    glColor3f(1.0,0.0,0.0);
+  }
+  else if(radius==5)
+  {
+    glColor3f(0.0,1.0,1.0);
+  }
+
+
   glBegin(GL_POINTS);
 
   glPointSize(10.0);
@@ -24,9 +33,10 @@ void DrawCircle::plotPixel( int x, int y )
 
 
 //constructor
-DrawCircle::DrawCircle( pii a )
+DrawCircle::DrawCircle( pii a, int b )
 {
   p = a;
+  radius = b;
 
   midpointCircle();
 }
@@ -35,7 +45,6 @@ DrawCircle::DrawCircle( pii a )
 void DrawCircle::midpointCircle()
 {
   int x = 0;
-  int radius = 10;
   int y = radius;
   int d = 1- radius;
 

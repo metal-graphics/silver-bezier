@@ -142,7 +142,7 @@ void myMouse(int button, int state, int x, int y)
       points.pb(p);
       numPoints++;
 
-      DrawCircle dc = DrawCircle(mp(x,480-y)); //draws a circle of rad=10 around the point
+      DrawCircle dc = DrawCircle(mp(x,480-y), 10); //draws a circle of rad=10 around the point
       drawDot(x, 480 - y);
     }
     if(y<=50)
@@ -231,12 +231,13 @@ void myDisplay()
 
   if(draw==true)
   {
+    samplePoints.clear();
     for(int i=0; i<numPoints-1;i++)
     {
-      DrawCircle dc = DrawCircle(mp(points[i].x,points[i].y));
+      DrawCircle dc = DrawCircle(mp(points[i].x,points[i].y), 10);
       drawLine(points[i],points[i+1]);
     }
-    DrawCircle dc1 = DrawCircle(mp(points[numPoints-1].x, points[numPoints-1].y));
+    DrawCircle dc1 = DrawCircle(mp(points[numPoints-1].x, points[numPoints-1].y), 10);
 
     int tempt = 0; //counter to sample the bezier curve at 0.1
     Point M, P = points[0];
@@ -251,7 +252,13 @@ void myDisplay()
       P=M;
       tempt++;
     }
+    samplePoints.pb(points[numPoints-1]);
     draw = false;
+
+    for(int i=0; i<samplePoints.size(); ++i)
+    {
+      DrawCircle dc2 = DrawCircle(mp(samplePoints[i].x, samplePoints[i].y), 5);
+    }
     convertToOFF();
   }
 

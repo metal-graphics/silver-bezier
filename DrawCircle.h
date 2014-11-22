@@ -9,7 +9,7 @@ class DrawCircle
 {
   public:
     void plotPixel( int, int );
-    DrawCircle( pii );
+    DrawCircle( pii, int );
 
   private:
     pii p;
