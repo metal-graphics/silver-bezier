@@ -86,6 +86,7 @@ MeshDS MeshDS::meshObject()
 }
 
 
+/* creates a OFF file from the data stored in the object */
 void MeshDS::makeOFFfile()
 {
   ofstream output(outputFile);

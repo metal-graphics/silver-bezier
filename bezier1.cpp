@@ -25,10 +25,9 @@ using namespace std;
 
 //Global Variables
 int numPoints = 0;
-bool draw = false;
-int click = 0;
+bool draw = false; // if true, then only the curve is calculated
+int click = 0; //to edit the curve
 int newPoint;
-double angleRotate = 15.0;
 static const double PI = 3.1416;
 
 vector<Point> points; //to store the input points
@@ -112,12 +111,14 @@ double binomial(int f, int n)
 }
 
 
+/*curve in bernstein form---curve = (sum i=0ton)(control points*bernstein basis polynomial)*/
 Point bernstein(double t, int num)
 {
   Point n;
   double nx = 0;
   double ny = 0;
 
+  // bernstein basis polynomial, b[i,n](t)= (nCi)*((1-t)^(n-i))*(t^i)
   for(int i=0; i<=num; i++)
   {
     nx += points[i].x*binomial(i,num)*pow(t,i)*pow((1-t),(num-i));
@@ -140,12 +141,12 @@ void myMouse(int button, int state, int x, int y)
       Point p = Point();
       p.setxyz( (double)x, (double)(480-y), 0.0f );
       points.pb(p);
-      numPoints++;
+      numPoints++; //number of points selected so far
 
       DrawCircle dc = DrawCircle(mp(x,480-y), 10); //draws a circle of rad=10 around the point
       drawDot(x, 480 - y);
     }
-    if(y<=50)
+    if(y<=50) //if any of the top 50 pixels are selected, then start drawing the curve
     {
       draw = true;
       glutPostRedisplay();
@@ -178,7 +179,7 @@ void myMouse(int button, int state, int x, int y)
       glutPostRedisplay();//new curve
     }
   }
-  else if(button==GLUT_MIDDLE_BUTTON && state==GLUT_DOWN )
+  else if(button==GLUT_MIDDLE_BUTTON && state==GLUT_DOWN ) // parsing an input file
   {
     cout<<"parsing the OFF file\n";
 
@@ -192,17 +193,19 @@ void myMouse(int button, int state, int x, int y)
 }
 
 
+/*function creates a MeshDS object of the points entered by user and creates a surface of revolution*/
 void convertToOFF()
 {
   MeshDS mds = MeshDS();
   Point pds = Point();
 
+  //to create the surface of revoltion about y-axis
   for(double theta = 0.0; theta<=2.0*PI; theta += PI/12.0)
   {
     for(int i=0; i<samplePoints.size(); ++i)
     {
-      double newx = samplePoints[i].x * cos(theta);
-      double newy = samplePoints[i].y;
+      double newx = samplePoints[i].x * cos(theta);//value theta taken in radians
+      double newy = samplePoints[i].y; //rotated about y-axis, so it doesn't change
       double newz = (-samplePoints[i].x) * sin(theta);
 
       pds.setxyz(newx,newy,newz);
@@ -210,18 +213,19 @@ void convertToOFF()
     }
   }
 
-  vector<int> vface;
+  vector<int> vface; //temporary vector for each face
   for(int i=0; i<24; ++i)
   {
     for(int j=0; j<samplePoints.size()-1; ++j)
     {
-      vface.clear();
-      vface.pb(11*i + j);
+      vface.clear(); //clear the vector for each iteration
+      vface.pb(11*i + j); //each face is a triangle
       vface.pb(11*i + j+1);
       vface.pb(11*(i+1) + j);
       mds.initFaces(vface);
     }
 
+    //four points- two triangle faces are created to represent them
     for(int j=0; j<samplePoints.size()-1; ++j)
     {
       vface.clear();
