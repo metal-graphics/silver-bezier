@@ -196,7 +196,7 @@ void convertToOFF()
 {
   MeshDS mds = MeshDS();
   Point pds = Point();
-  int vertexNum= 1;
+  int vertexNum= 0;
   for(int i=0; i<samplePoints.size(); ++i)
   {
     vector<int> vtemp;
