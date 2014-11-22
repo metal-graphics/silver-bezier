@@ -9,6 +9,7 @@
 #include "MeshDS.h"
 
 char fileName[] = "one.off";
+char outputFile[] = "two.off";
 /* MeshDS is parser for OFF format files */
 /* MeshDS takes input from OFF format files and returns a MeshDS object */
 
@@ -84,3 +85,35 @@ MeshDS MeshDS::meshObject()
   return obj;
 }
 
+
+void MeshDS::makeOFFfile()
+{
+  ofstream output(outputFile);
+
+  output << "OFF\n";
+
+  int numberVertices = vertices.size();
+  int numberFaces = faces.size();
+
+  output << numberVertices << " " << numberFaces << " " << 0 << "\n";
+
+  for(int i=0; i<numberVertices; ++i)
+  {
+    output << vertices[i].x << " " << vertices[i].y << " " << vertices[i].z << "\n";
+  }
+
+  int faceSize;
+
+  for(int i=0; i<numberFaces; ++i)
+  {
+    faceSize = faces[i].size();
+    output << faceSize << " ";
+    for(int j=0; j<faceSize; ++j)
+    {
+      output << faces[i][j] << " ";
+    }
+    output << "\n";
+  }
+
+  cout<<"OFF file generated\n";
+}

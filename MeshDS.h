@@ -26,6 +26,7 @@ class MeshDS
     void initEdges(int, int);
     void initFaces(vector<int>);
     MeshDS meshObject();
+    void makeOFFfile();
 };
 
 
