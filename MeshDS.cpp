@@ -15,7 +15,7 @@ char outputFile[] = "two.off";
 
 MeshDS::MeshDS() //constructor
 {
-  
+
 }
 
 void MeshDS::initVertices( Point p ) //initializes vertices and forms a vector
@@ -24,12 +24,12 @@ void MeshDS::initVertices( Point p ) //initializes vertices and forms a vector
 }
 
 //forms a data structure for vertices... a and b are vertex numbers(in vertices vector)
-void MeshDS::initEdges(int a, int b ) 
+void MeshDS::initEdges(int a, int b )
 {
   edges.push_back(make_pair(a,b));
 }
 
-//it forms a ds for faces. vector size at each vector index denotes number of vertices for each face 
+//it forms a ds for faces. vector size at each vector index denotes number of vertices for each face
 void MeshDS::initFaces(vector<int> f)
 {
   faces.push_back(f);
@@ -107,6 +107,7 @@ void MeshDS::makeOFFfile()
   for(int i=0; i<numberFaces; ++i)
   {
     faceSize = faces[i].size();
+
     output << faceSize << " ";
     for(int j=0; j<faceSize; ++j)
     {
