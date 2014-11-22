@@ -196,23 +196,40 @@ void convertToOFF()
 {
   MeshDS mds = MeshDS();
   Point pds = Point();
-  int vertexNum= 0;
-  for(int i=0; i<samplePoints.size(); ++i)
+
+  for(double theta = 0.0; theta<=2.0*PI; theta += PI/12.0)
   {
-    vector<int> vtemp;
-    for(double theta = 0.0; theta<2.0*PI; theta += PI/6.0)
+    for(int i=0; i<samplePoints.size(); ++i)
     {
-      double costheta = cos(theta);
-      double sintheta = sin(theta);
-      double newx = samplePoints[i].x * costheta;
+      double newx = samplePoints[i].x * cos(theta);
       double newy = samplePoints[i].y;
-      double newz = -samplePoints[i].x * sintheta;
-      vtemp.pb(vertexNum);
+      double newz = (-samplePoints[i].x) * sin(theta);
+
       pds.setxyz(newx,newy,newz);
-      mds.initVertices(pds);
-      vertexNum++;
+      mds.initVertices(pds); //add the new point to vertices vector
     }
-    mds.initFaces(vtemp);
+  }
+
+  vector<int> vface;
+  for(int i=0; i<24; ++i)
+  {
+    for(int j=0; j<samplePoints.size()-1; ++j)
+    {
+      vface.clear();
+      vface.pb(11*i + j);
+      vface.pb(11*i + j+1);
+      vface.pb(11*(i+1) + j);
+      mds.initFaces(vface);
+    }
+
+    for(int j=0; j<samplePoints.size()-1; ++j)
+    {
+      vface.clear();
+      vface.pb(11*(i+1) + j);
+      vface.pb(11*i + j+1);
+      vface.pb(11*(i+1) + j+1);
+      mds.initFaces(vface);
+    }
   }
 
   mds.makeOFFfile();
