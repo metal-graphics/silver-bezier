@@ -28,8 +28,11 @@ int numPoints = 0;
 bool draw = false;
 int click = 0;
 int newPoint;
+double angleRotate = 15.0;
+static const double PI = 3.1416;
 
-vector<Point> points;
+vector<Point> points; //to store the input points
+vector<Point> samplePoints; // to store the sampled points of the curve
 
 
 /* Initialize OpenGL Graphics */
@@ -189,6 +192,31 @@ void myMouse(int button, int state, int x, int y)
 }
 
 
+void convertToOFF()
+{
+  MeshDS mds = MeshDS();
+  Point pds = Point();
+  int vertexNum= 1;
+  for(int i=0; i<samplePoints.size(); ++i)
+  {
+    vector<int> vtemp;
+    for(double theta = 0.0; theta<2.0*PI; theta += PI/6.0)
+    {
+      double newx = 1;
+      double newy = 1;
+      double newz = 1;
+      vtemp.pb(vertexNum);
+      pds.setxyz(newx,newy,newz);
+      mds.initVertices(pds);
+      vertexNum++;
+    }
+    mds.initFaces(vtemp);
+  }
+
+  mds.makeOFFfile();
+}
+
+
 /*
   Handler for window-repaint event. Called back when the window first appears and
   whenever the window needs to be re-painted.
@@ -208,14 +236,21 @@ void myDisplay()
     }
     DrawCircle dc1 = DrawCircle(mp(points[numPoints-1].x, points[numPoints-1].y));
 
+    int tempt = 0; //counter to sample the bezier curve at 0.1
     Point M, P = points[0];
     for(double t = 0.0;t <= 1.0; t += 0.001)
     {
       M = bernstein(t, numPoints-1);
       drawBezier(P,M);
+      if(tempt%100==0)
+      {
+        samplePoints.pb(M); //curve sampled uniformly at 0.1
+      }
       P=M;
+      tempt++;
     }
     draw = false;
+    convertToOFF();
   }
 
   glFlush();
