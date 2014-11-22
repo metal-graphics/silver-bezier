@@ -106,7 +106,7 @@ void MeshDS::makeOFFfile()
 
   for(int i=0; i<numberFaces; ++i)
   {
-    faceSize = faces[i].size();
+    faceSize = faces[i].size()-1;
     output << faceSize << " ";
     for(int j=0; j<faceSize; ++j)
     {

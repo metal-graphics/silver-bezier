@@ -202,9 +202,11 @@ void convertToOFF()
     vector<int> vtemp;
     for(double theta = 0.0; theta<2.0*PI; theta += PI/6.0)
     {
-      double newx = 1;
-      double newy = 1;
-      double newz = 1;
+      double costheta = cos(theta);
+      double sintheta = sin(theta);
+      double newx = samplePoints[i].x * costheta;
+      double newy = samplePoints[i].y;
+      double newz = -samplePoints[i].x * sintheta;
       vtemp.pb(vertexNum);
       pds.setxyz(newx,newy,newz);
       mds.initVertices(pds);
